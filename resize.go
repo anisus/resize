@@ -21,7 +21,7 @@ THIS SOFTWARE.
 // utilized in the computations.
 //
 // Example:
-//     imgResized := resize.Resize(1000, 0, imgOld, resize.MitchellNetravali)
+//     imgResized := resize.Resize(1000, 1000, imgOld, resize.MitchellNetravali)
 package resize
 
 import (
@@ -44,14 +44,14 @@ type InterpolationFunction func(image.Image, float32) Filter
 
 // Resize an image to new width and height using the interpolation function interp.
 // A new image with the given dimensions will be returned.
-// If one of the parameters width or height is set to 0, its size will be calculated so that
-// the aspect ratio is that of the originating image.
 // The resizing algorithm uses channels for parallel computation.
 func Resize(width, height uint, img image.Image, interp InterpolationFunction) image.Image {
 	oldBounds := img.Bounds()
 	oldWidth := float32(oldBounds.Dx())
 	oldHeight := float32(oldBounds.Dy())
-	scaleX, scaleY := calcFactors(width, height, oldWidth, oldHeight)
+
+	scaleX := oldWidth / float32(width)
+	scaleY := oldHeight / float32(height)
 
 	tempImg := image.NewRGBA64(image.Rect(0, 0, oldBounds.Dy(), int(0.7+oldWidth/scaleX)))
 	b := tempImg.Bounds()
@@ -105,27 +105,6 @@ func resizeSlice(input image.Image, output *image.RGBA64, interp InterpolationFu
 	}
 
 	c <- 1
-}
-
-// Calculate scaling factors using old and new image dimensions.
-func calcFactors(width, height uint, oldWidth, oldHeight float32) (scaleX, scaleY float32) {
-	if width == 0 {
-		if height == 0 {
-			scaleX = 1.0
-			scaleY = 1.0
-		} else {
-			scaleY = oldHeight / float32(height)
-			scaleX = scaleY
-		}
-	} else {
-		scaleX = oldWidth / float32(width)
-		if height == 0 {
-			scaleY = scaleX
-		} else {
-			scaleY = oldHeight / float32(height)
-		}
-	}
-	return
 }
 
 // Set filter scaling factor to avoid moire patterns.

@@ -15,31 +15,8 @@ func init() {
 }
 
 func Test_Nearest(t *testing.T) {
-	m := Resize(6, 0, img, NearestNeighbor)
+	m := Resize(6, 6, img, NearestNeighbor)
 	if m.At(1, 1) == m.At(2, 2) {
-		t.Fail()
-	}
-}
-
-func Test_Param1(t *testing.T) {
-	m := Resize(0, 0, img, NearestNeighbor)
-	if m.Bounds() != img.Bounds() {
-		t.Fail()
-	}
-}
-
-func Test_Param2(t *testing.T) {
-	m := Resize(100, 0, img, NearestNeighbor)
-	if m.Bounds() != image.Rect(0, 0, 100, 100) {
-		t.Fail()
-	}
-}
-
-func Test_ZeroImg(t *testing.T) {
-	zeroImg := image.NewGray16(image.Rect(0, 0, 0, 0))
-
-	m := Resize(0, 0, zeroImg, NearestNeighbor)
-	if m.Bounds() != zeroImg.Bounds() {
 		t.Fail()
 	}
 }
@@ -47,7 +24,7 @@ func Test_ZeroImg(t *testing.T) {
 func Test_CorrectResize(t *testing.T) {
 	zeroImg := image.NewGray16(image.Rect(0, 0, 256, 256))
 
-	m := Resize(60, 0, zeroImg, NearestNeighbor)
+	m := Resize(60, 60, zeroImg, NearestNeighbor)
 	if m.Bounds() != image.Rect(0, 0, 60, 60) {
 		t.Fail()
 	}
@@ -77,7 +54,7 @@ func jpegThumb(b *testing.B, interp InterpolationFunction) {
 
 	var output image.Image
 	for i := 0; i < b.N; i++ {
-		output = Resize(800, 0, input, interp)
+		output = Resize(800, 533, input, interp)
 	}
 
 	output.At(0, 0)
