@@ -23,9 +23,7 @@ Import package with
 import "github.com/nfnt/resize"
 ```
 
-The resize package provides 2 functions:
-
-* `resize.Resize` creates a scaled image with new dimensions (`width`, `height`) using the interpolation function `interp`.
+`resize.Resize` creates a scaled image with new dimensions (`width`, `height`) using the interpolation function `interp`.
 
 ```go
 resize.Resize(width, height uint, img image.Image, interp resize.InterpolationFunction) image.Image
