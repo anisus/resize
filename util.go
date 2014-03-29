@@ -20,16 +20,28 @@ import (
 	"image"
 )
 
+// Utility function that calculates the height needed to resize an image
+// to a certain width, preserving its aspect ratio.
+// Returns width and height to be easily interchangeable with the other
+// utility functions.
 func FromWidth(rect image.Rectangle, width uint) (uint, uint) {
 	aspectInv := float32(rect.Dy()) / float32(rect.Dx())
 	return width, uint(float32(width) * aspectInv)
 }
 
+// Utility function that calculates the width needed to resize an image
+// to a certain height, preserving its aspect ratio.
+// Returns width and height to be easily interchangeable with the other
+// utility functions.
 func FromHeight(rect image.Rectangle, height uint) (uint, uint) {
 	aspect := float32(rect.Dx()) / float32(rect.Dy())
 	return uint(float32(height) * aspect), height
 }
 
+// Utility function that calculates the width and height needed to resize an
+// image to a maximum width or height, preserving its aspect ratio.
+// It will return the original image width and height if these are already
+// smaller than the provided maximum width and height.
 func Thumbnail(rect image.Rectangle, maxWidth, maxHeight uint) (uint, uint) {
 	aspect := float32(rect.Dx()) / float32(rect.Dy())
 	if maxWidth >= uint(rect.Dx()) && maxHeight >= uint(rect.Dy()) {
