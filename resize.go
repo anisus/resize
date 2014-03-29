@@ -46,6 +46,10 @@ type InterpolationFunction func(image.Image, float32) Filter
 // A new image with the given dimensions will be returned.
 // The resizing algorithm uses channels for parallel computation.
 func Resize(width, height uint, img image.Image, interp InterpolationFunction) image.Image {
+	if width == 0 || height == 0 || img == nil {
+		return nil
+	}
+
 	oldBounds := img.Bounds()
 	oldWidth := float32(oldBounds.Dx())
 	oldHeight := float32(oldBounds.Dy())

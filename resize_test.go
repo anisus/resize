@@ -30,6 +30,31 @@ func Test_CorrectResize(t *testing.T) {
 	}
 }
 
+func Test_ErrorHandlingNilImage(t *testing.T) {
+	m := Resize(100, 100, nil, NearestNeighbor)
+	if m != nil {
+		t.Fail()
+	}
+}
+
+func Test_ErrorHandlingZeroBounds(t *testing.T) {
+	var inputs = []struct {
+		width  uint
+		height uint
+	}{
+		{0, 100},
+		{100, 0},
+		{0, 0},
+	}
+
+	for _, input := range inputs {
+		m := Resize(input.width, input.height, img, NearestNeighbor)
+		if m != nil {
+			t.Fail()
+		}
+	}
+}
+
 func Benchmark_BigResizeLanczos3(b *testing.B) {
 	var m image.Image
 	for i := 0; i < b.N; i++ {
