@@ -52,10 +52,10 @@ type genericConverter struct {
 
 func (c *genericConverter) at(x, y int, result *colorArray) {
 	r, g, b, a := c.src.At(replicateBorder(x, y, c.src.Bounds())).RGBA()
-	result[0] = float32(r)
-	result[1] = float32(g)
-	result[2] = float32(b)
-	result[3] = float32(a)
+	result[0] = float32(r) / 65535
+	result[1] = float32(g) / 65535
+	result[2] = float32(b) / 65535
+	result[3] = float32(a) / 65535
 	return
 }
 
@@ -65,10 +65,10 @@ type rgbaConverter struct {
 
 func (c *rgbaConverter) at(x, y int, result *colorArray) {
 	i := c.src.PixOffset(replicateBorder(x, y, c.src.Rect))
-	result[0] = float32(uint16(c.src.Pix[i+0])<<8 | uint16(c.src.Pix[i+0]))
-	result[1] = float32(uint16(c.src.Pix[i+1])<<8 | uint16(c.src.Pix[i+1]))
-	result[2] = float32(uint16(c.src.Pix[i+2])<<8 | uint16(c.src.Pix[i+2]))
-	result[3] = float32(uint16(c.src.Pix[i+3])<<8 | uint16(c.src.Pix[i+3]))
+	result[0] = float32(uint16(c.src.Pix[i+0])<<8|uint16(c.src.Pix[i+0])) / 65535
+	result[1] = float32(uint16(c.src.Pix[i+1])<<8|uint16(c.src.Pix[i+1])) / 65535
+	result[2] = float32(uint16(c.src.Pix[i+2])<<8|uint16(c.src.Pix[i+2])) / 65535
+	result[3] = float32(uint16(c.src.Pix[i+3])<<8|uint16(c.src.Pix[i+3])) / 65535
 	return
 }
 
@@ -78,10 +78,10 @@ type rgba64Converter struct {
 
 func (c *rgba64Converter) at(x, y int, result *colorArray) {
 	i := c.src.PixOffset(replicateBorder(x, y, c.src.Rect))
-	result[0] = float32(uint16(c.src.Pix[i+0])<<8 | uint16(c.src.Pix[i+1]))
-	result[1] = float32(uint16(c.src.Pix[i+2])<<8 | uint16(c.src.Pix[i+3]))
-	result[2] = float32(uint16(c.src.Pix[i+4])<<8 | uint16(c.src.Pix[i+5]))
-	result[3] = float32(uint16(c.src.Pix[i+6])<<8 | uint16(c.src.Pix[i+7]))
+	result[0] = float32(uint16(c.src.Pix[i+0])<<8|uint16(c.src.Pix[i+1])) / 65535
+	result[1] = float32(uint16(c.src.Pix[i+2])<<8|uint16(c.src.Pix[i+3])) / 65535
+	result[2] = float32(uint16(c.src.Pix[i+4])<<8|uint16(c.src.Pix[i+5])) / 65535
+	result[3] = float32(uint16(c.src.Pix[i+6])<<8|uint16(c.src.Pix[i+7])) / 65535
 	return
 }
 
@@ -92,10 +92,10 @@ type grayConverter struct {
 func (c *grayConverter) at(x, y int, result *colorArray) {
 	i := c.src.PixOffset(replicateBorder(x, y, c.src.Rect))
 	g := float32(uint16(c.src.Pix[i])<<8 | uint16(c.src.Pix[i]))
-	result[0] = g
-	result[1] = g
-	result[2] = g
-	result[3] = float32(0xffff)
+	result[0] = g / 65535
+	result[1] = g / 65535
+	result[2] = g / 65535
+	result[3] = 1
 	return
 }
 
@@ -106,10 +106,10 @@ type gray16Converter struct {
 func (c *gray16Converter) at(x, y int, result *colorArray) {
 	i := c.src.PixOffset(replicateBorder(x, y, c.src.Rect))
 	g := float32(uint16(c.src.Pix[i+0])<<8 | uint16(c.src.Pix[i+1]))
-	result[0] = g
-	result[1] = g
-	result[2] = g
-	result[3] = float32(0xffff)
+	result[0] = g / 65535
+	result[1] = g / 65535
+	result[2] = g / 65535
+	result[3] = 1
 	return
 }
 
@@ -122,9 +122,9 @@ func (c *ycbcrConverter) at(x, y int, result *colorArray) {
 	yi := c.src.YOffset(xx, yy)
 	ci := c.src.COffset(xx, yy)
 	r, g, b := color.YCbCrToRGB(c.src.Y[yi], c.src.Cb[ci], c.src.Cr[ci])
-	result[0] = float32(uint16(r) * 0x101)
-	result[1] = float32(uint16(g) * 0x101)
-	result[2] = float32(uint16(b) * 0x101)
-	result[3] = float32(0xffff)
+	result[0] = float32(uint16(r)*0x101) / 65535
+	result[1] = float32(uint16(g)*0x101) / 65535
+	result[2] = float32(uint16(b)*0x101) / 65535
+	result[3] = 1
 	return
 }

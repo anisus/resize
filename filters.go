@@ -90,10 +90,10 @@ func (f *filterModel) Interpolate(u float32, y int) color.RGBA64 {
 
 	c := f.convolution1d()
 	return color.RGBA64{
-		clampToUint16(c[0]),
-		clampToUint16(c[1]),
-		clampToUint16(c[2]),
-		clampToUint16(c[3]),
+		clampToUint16(c[0] * 65535),
+		clampToUint16(c[1] * 65535),
+		clampToUint16(c[2] * 65535),
+		clampToUint16(c[3] * 65535),
 	}
 }
 
