@@ -97,6 +97,27 @@ func (f *filterModel) Interpolate(u float32, y int) color.RGBA64 {
 	}
 }
 
+func (f *filterModel) InterpolateSRGB(u float32, y int) color.RGBA64 {
+	uf := int(u) - len(f.tempRow)/2 + 1
+	u -= float32(uf)
+
+	var temp colorArray
+	for i := range f.tempRow {
+		f.at(uf+i, y, &temp)
+		temp.toLinear(&f.tempRow[i])
+	}
+
+	temp = f.convolution1d()
+	var c colorArray
+	temp.toSRGB(&c)
+	return color.RGBA64{
+		clampToUint16(c[0] * 65535),
+		clampToUint16(c[1] * 65535),
+		clampToUint16(c[2] * 65535),
+		clampToUint16(c[3] * 65535),
+	}
+}
+
 // createFilter tries to find an optimized converter for the given input image
 // and initializes all filterModel members to their defaults
 func createFilter(img image.Image, factor float32, size int, kernel func(float32) float32) (f Filter) {
