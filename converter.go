@@ -19,9 +19,36 @@ package resize
 import (
 	"image"
 	"image/color"
+	"math"
 )
 
 type colorArray [4]float32
+
+// convert sRGB to linear color space
+func (c *colorArray) toLinear(out *colorArray) {
+	for i := range c[0:3] {
+		if c[i] <= 0.04045 {
+			out[i] = c[i] / 12.92
+		} else {
+			out[i] = float32(math.Pow((float64(c[i])+0.055)/1.055, 2.4))
+		}
+	}
+	out[3] = c[3]
+	return
+}
+
+// convert linear to sRGB color space
+func (c *colorArray) toSRGB(out *colorArray) {
+	for i := range c[0:3] {
+		if c[i] <= 0.0031308 {
+			out[i] = 12.92 * c[i]
+		} else {
+			out[i] = 1.055*float32(math.Pow(float64(c[i]), 1./2.4)) - .055
+		}
+	}
+	out[3] = c[3]
+	return
+}
 
 func replicateBorder1d(x, min, max int) int {
 	if x < min {
